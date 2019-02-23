@@ -34,6 +34,7 @@ rubocop:
   tags:
     - ruby
   before_script:
+  - apk --update add build-base git
   - gem install rubocop
   script:
   - rubocop
