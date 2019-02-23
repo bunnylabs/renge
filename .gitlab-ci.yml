@@ -43,9 +43,9 @@ test:
   tags:
     - ruby
   variables:
-    DATABASE_URL: postgres://postgres:postgres@localhost
-    REDIS_URL: redis://localhost:6379/0
-    CHROME_HOSTNAME: localhost
+    DATABASE_URL: postgres://postgres:postgres@postgres
+    REDIS_URL: redis://redis:6379/0
+    CHROME_HOSTNAME: selenium-standalone-chrome-debug
   script:
   - bundle exec rails db:create
   - bundle exec rails db:migrate
