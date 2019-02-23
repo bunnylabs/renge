@@ -31,14 +31,20 @@ before_script:
 
 # Optional - Delete if not using `rubocop`
 rubocop:
+  tags:
+    - ruby
   script:
   - rubocop
 
 rspec:
+  tags:
+    - ruby
   script:
   - rspec spec
 
 rails:
+  tags:
+    - ruby
   variables:
     DATABASE_URL: postgres://postgres:postgres@db
     REDIS_URL: redis://redis:6379/0
