@@ -17,7 +17,7 @@ require 'sprockets/railtie'
 
 Bundler.require(*Rails.groups)
 
-module RailsZen
+module Renge
   # The application config
   class Application < Rails::Application
     # Initialize configuration defaults for originally generated Rails version.
