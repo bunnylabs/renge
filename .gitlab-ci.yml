@@ -33,16 +33,12 @@ before_script:
 rubocop:
   tags:
     - ruby
+  before_script:
+  - gem install rubocop
   script:
   - rubocop
 
-rspec:
-  tags:
-    - ruby
-  script:
-  - rspec spec
-
-rails:
+test:
   tags:
     - ruby
   variables:
@@ -52,3 +48,4 @@ rails:
   script:
   - rails db:create
   - rails db:migrate
+  - rspec spec
