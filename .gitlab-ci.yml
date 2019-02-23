@@ -6,10 +6,6 @@ image: "ruby:2.6-alpine"
 # Pick zero or more services to be used on all builds.
 # Only needed when using a docker container to run your tests in.
 # Check out: http://docs.gitlab.com/ce/ci/docker/using_docker_images.html#what-is-a-service
-services:
-  - redis:alpine
-  - postgres:alpine
-  - selenium/standalone-chrome-debug
 
 variables:
   POSTGRES_DB: renge_test
@@ -40,6 +36,10 @@ rubocop:
   - rubocop
 
 test:
+  services:
+    - redis:alpine
+    - postgres:alpine
+    - selenium/standalone-chrome-debug
   tags:
     - ruby
   variables:
@@ -47,6 +47,6 @@ test:
     REDIS_URL: redis://redis:6379/0
     CHROME_HOSTNAME: localhost
   script:
-  - rails db:create
-  - rails db:migrate
-  - rspec spec
+  - bundle exec rails db:create
+  - bundle exec rails db:migrate
+  - bundle exec rspec
