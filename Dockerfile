@@ -6,12 +6,12 @@ ARG PGID=1000
 RUN apk --update add build-base git file less postgresql-dev nodejs tzdata curl rust cargo && \
 	addgroup -g ${PGID} srv && \
     adduser -D -u ${PUID} -G srv srv && \
-    # mkdir -p /tmp/ && \ # Uncomment these if you want rbspy
-    # cd /tmp/ && \
-    # export PATH=/root/.cargo/bin:$PATH && \
-    # git clone https://github.com/rbspy/rbspy && \
-    # cd rbspy && \
-    # cargo install && \
+    mkdir -p /tmp/ && \
+    cd /tmp/ && \
+    export PATH=/root/.cargo/bin:$PATH && \
+    git clone https://github.com/rbspy/rbspy && \
+    cd rbspy && \
+    cargo install && \
     mkdir -p /srv/tmp && \
     chown -R srv /srv
 
