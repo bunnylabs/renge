@@ -73,6 +73,13 @@ services:
       - redis
     command: sh -c "rails db:create && rails db:migrate && rails db:seed"
 
+  discord:
+    build: ./bots/discord-bot
+    environment:
+      BOT_TOKEN: ${BOT_TOKEN}
+    depends_on:
+      - rails
+
   # ****************
   # Tools
   # ****************
