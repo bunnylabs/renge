@@ -16,7 +16,7 @@ const fileType = require('file-type');
 var jsmediatags = require("jsmediatags");
 
 const BOT_TOKEN = process.env.BOT_TOKEN
-const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails/api/v1"
+const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails:3000/api/v1/discord"
 const API_PORT = process.env.API_PORT || 3000;
 
 // Send message to channel
@@ -64,7 +64,7 @@ function find_channel(client, chan_id, on_success, on_failure)
 
 function not_find_chan(chan)
 {
-  console.log("could not find channel", chan_id)
+  console.log("[ERR]", "Could not find channel", chan_id)
 }
 
 function start_html_server() {
@@ -88,7 +88,72 @@ client.on('ready', () => {
 
 
 client.on('message', message => {
-  console.log("[MSG]", message.author, message.content);
+  var message_info = {
+    author_id:       message.author.id,
+    author_username: message.author.username,
+    author_is_bot:   message.author.bot,
+
+    room_type:       message.channel.type,
+    room_id:         message.channel.id,
+    room_name:       message.channel.name,
+
+    created_at:      message.createdTimestamp,
+    edited_at:       message.editedTimestamp,
+
+    attachments:     message.attachments.map(function(attachment)
+    {
+      return {
+        id:            attachment.id,
+        filename:      attachment.filename,
+        filesize:      attachment.filesize,
+        url:           attachment.url,
+        proxy_url:     attachment.proxyURL,
+        is_image:      attachment.height ? true : false
+      };
+    }),
+
+    message:         message.content
+
+  }
+
+  if (message.member && message.member.guild)
+  {
+    message_info.server_id   = message.member.guild.id;
+    message_info.server_name = message.member.guild.name; 
+  }
+
+  var url = new URL(RAILS_ENDPOINT);
+
+  var post_data = JSON.stringify(message_info);
+
+  var post_options = {
+      host: url.hostname,
+      port: url.port,
+      path: url.pathname,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Content-Length': Buffer.byteLength(post_data)
+      }
+  };
+
+  console.log("[MSG]", post_options);
+  
+  const req = proto['http:'].request(post_options, function(res) {
+    res.setEncoding('utf8');
+    res.on('data', function (chunk) {
+      console.log('[RES]', chunk);
+    });
+  });
+
+  req.write(post_data);
+  req.end();
+
+  req.on('error', (e) => {
+    console.error("[ERR]", `problem with request: ${e.message}`);
+  });
+
+  console.log("[MSG]", message_info);
 });
 
 client.login(process.env.BOT_TOKEN);
