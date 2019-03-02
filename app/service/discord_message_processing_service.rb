@@ -10,16 +10,16 @@ class DiscordMessageProcessingService
   end
 
   def run
-    return unless @result == :not_run
+    run_if_valid do
+      CommandRunnerWorker.perform_async(@params)
+    end
+  end
 
-    return @result = :self if @params[:author_id].to_s == DiscordService.id.to_s
-    return @result = :not_understood if no_such_command
-
-    cmd = command_class.new(@params, self)
-    return @result = :ignored unless directed? == cmd.directed_only?
-
-    CommandRunnerWorker.perform_async(@params)
-    @result = :ok
+  def run_now
+    run_if_valid do
+      cmd = command_class.new(@params, self)
+      cmd.run
+    end
   end
 
   def directed?
@@ -59,5 +59,20 @@ class DiscordMessageProcessingService
 
   def no_such_command
     command_class.nil?
+  end
+
+  private
+
+  def run_if_valid(&block)
+    return unless @result == :not_run
+
+    return @result = :self if @params[:author_id].to_s == DiscordService.id.to_s
+    return @result = :not_understood if no_such_command
+
+    cmd = command_class.new(@params, self)
+    return @result = :ignored unless directed? == cmd.directed_only?
+
+    yield if block
+    @result = :ok
   end
 end
