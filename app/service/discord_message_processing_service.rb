@@ -13,15 +13,22 @@ class DiscordMessageProcessingService
     return unless @result == :not_run
 
     return @result = :self if @params[:author_id].to_s == DiscordService.id.to_s
-    return @result = :ignored if no_such_command
+    return @result = :not_understood if no_such_command
 
     cmd = command_class.new(@params, self)
-    cmd.run if directed? == cmd.directed_only?
+    return @result = :ignored unless directed? == cmd.directed_only?
+
+    CommandRunnerWorker.perform_async(@params)
     @result = :ok
   end
 
   def directed?
-    @params[:room_type] == 'dm' || raw_tokens[0] == "<@#{DiscordService.id}>"
+    @params[:room_type] == 'dm' || starts_with_username
+  end
+
+  def starts_with_username
+    raw_tokens[0] == "<@#{DiscordService.id}>" ||
+      raw_tokens[0] == DiscordService.username
   end
 
   def raw_tokens
@@ -29,7 +36,7 @@ class DiscordMessageProcessingService
   end
 
   def tokens
-    return raw_tokens[1..-1] if raw_tokens[0] == "<@#{DiscordService.id}>"
+    return raw_tokens[1..-1] if starts_with_username
 
     raw_tokens
   end

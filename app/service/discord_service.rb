@@ -13,15 +13,19 @@ class DiscordService
     end
 
     def id
-      @id ||= request_id.to_s
+      @id ||= request(:id).to_s
+    end
+
+    def username
+      @username ||= request(:username).to_s
     end
 
     private
 
-    def request_id
-      response = call_bot('GET', '/id')
+    def request(thing)
+      response = call_bot('GET', "/#{thing}")
       parsed = JSON.parse(response.body)
-      parsed['id']
+      parsed[thing.to_s]
     end
 
     def call_bot(method, path, data = {})

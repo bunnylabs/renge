@@ -28,6 +28,10 @@ services:
     environment:
       DATABASE_URL: postgres://postgres:postgres@db
       REDIS_URL: redis://redis:6379/0
+      DISCORD_HOSTNAME: discord # Point to discord container
+    volumes:
+      - .:/srv
+      - active_storage:/srv/storage
     depends_on:
       - db
       - redis

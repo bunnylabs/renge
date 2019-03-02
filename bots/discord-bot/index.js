@@ -81,6 +81,10 @@ function start_html_server(client) {
   app.get('/id', (req, res) =>{
     res.send(JSON.stringify({result: 'ok', id: client.user.id}))
   });
+  
+  app.get('/username', (req, res) =>{
+    res.send(JSON.stringify({result: 'ok', username: client.user.username}))
+  });
 
   app.all('/public/*', (req, res) => {
     var reply = "somereply";
