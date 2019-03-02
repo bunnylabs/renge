@@ -1,25 +1,9 @@
 # frozen_string_literal: true
 
-# This class processes messages from discord
-class DiscordMessageProcessingService
-  attr_reader :result
-
+# Provides functions to interpret a discord message
+class DiscordMessageService
   def initialize(params)
-    @result = :not_run
     @params = params
-  end
-
-  def run
-    run_if_valid do
-      CommandRunnerWorker.perform_async(@params)
-    end
-  end
-
-  def run_now
-    run_if_valid do
-      cmd = command_class.new(@params, self)
-      cmd.run
-    end
   end
 
   def directed?
@@ -61,18 +45,15 @@ class DiscordMessageProcessingService
     command_class.nil?
   end
 
-  private
+  def author_id
+    @params[:author_id].to_s
+  end
 
-  def run_if_valid(&block)
-    return unless @result == :not_run
+  def room_id
+    @params[:room_id].to_s
+  end
 
-    return @result = :self if @params[:author_id].to_s == DiscordService.id.to_s
-    return @result = :not_understood if no_such_command
-
-    cmd = command_class.new(@params, self)
-    return @result = :ignored unless directed? == cmd.directed_only?
-
-    yield if block
-    @result = :ok
+  def reply(msg)
+    DiscordService.send_message(room_id, msg)
   end
 end
