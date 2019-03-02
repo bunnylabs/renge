@@ -78,6 +78,10 @@ function start_html_server(client) {
     res.send(JSON.stringify({result: 'ok'}))
   });
 
+  app.get('/id', (req, res) =>{
+    res.send(JSON.stringify({result: 'ok', id: client.user.id}))
+  });
+
   app.all('/public/*', (req, res) => {
     var reply = "somereply";
     console.log('[INF]', 'API Called');
