@@ -67,8 +67,16 @@ function not_find_chan(chan)
   console.log("[ERR]", "Could not find channel", chan_id)
 }
 
-function start_html_server() {
+function start_html_server(client) {
   const app = express();
+
+  app.use(bodyParser.json());
+
+  app.put('/messages', (req, res) => {
+    console.log('[INF]', 'Send message:', '<#'+req.body.channel_id+'>', req.body.message);
+    client.channels.get(req.body.channel_id).send(req.body.message);
+    res.send(JSON.stringify({result: 'ok'}))
+  });
 
   app.all('/public/*', (req, res) => {
     var reply = "somereply";
@@ -83,7 +91,7 @@ function start_html_server() {
 
 client.on('ready', () => {
   console.log("[INF]", "Bot connected");
-  start_html_server();
+  start_html_server(client);
 });
 
 
@@ -137,7 +145,7 @@ client.on('message', message => {
       }
   };
 
-  console.log("[MSG]", post_options);
+  // console.log("[MSG]", post_options);
   
   const req = proto['http:'].request(post_options, function(res) {
     res.setEncoding('utf8');

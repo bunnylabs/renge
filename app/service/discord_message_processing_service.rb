@@ -2,9 +2,22 @@
 
 # This class processes messages from discord
 class DiscordMessageProcessingService
-  def initializer(_params)
-    @result = :ok
+  attr_reader :result
+
+  def initialize(params)
+    @result = :not_run
+    @params = params
   end
 
-  attr_reader :result
+  def run
+    return unless @result == :not_run
+
+    if @params[:author_id].to_s == DiscordService.id.to_s
+      @result = :self
+      return
+    end
+
+    DiscordService.send_message(@params[:room_id], "Hi, you said `#{@params[:message].inspect}`")
+    @result = :ok
+  end
 end

@@ -54,6 +54,7 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db
       REDIS_URL: redis://redis:6379/0
       CHROME_HOSTNAME: chrome # Point to the chrome container for testing
+      DISCORD_HOSTNAME: discord # Point to discord container
     volumes:
       - .:/srv
       - active_storage:/srv/storage
@@ -75,6 +76,7 @@ services:
 
   discord:
     build: ./bots/discord-bot
+    container_name: discord
     environment:
       BOT_TOKEN: ${BOT_TOKEN}
     depends_on:

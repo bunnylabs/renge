@@ -30,8 +30,8 @@ module V1
         end
       end
       post do
-        processor = DiscordMessageProcessingService.new
-        processor.process params
+        processor = DiscordMessageProcessingService.new(params)
+        processor.run
         { result: processor.result }
       end
     end
