@@ -24,7 +24,7 @@ RSpec.describe V1::DiscordApi, type: :request do
   end
 
   it 'returns correctly' do
-    service = class_double('DiscordMessageProcessingService')
+    service = instance_double('DiscordMessageProcessingService')
     expect(DiscordMessageProcessingService)
       .to receive(:new)
       .with(normal_message.stringify_keys)

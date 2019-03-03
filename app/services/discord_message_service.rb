@@ -7,10 +7,10 @@ class DiscordMessageService
   end
 
   def directed?
-    @params[:room_type] == 'dm' || starts_with_username
+    @params[:room_type] == 'dm' || starts_with_username?
   end
 
-  def starts_with_username
+  def starts_with_username?
     raw_tokens[0] == "<@#{DiscordService.id}>" ||
       raw_tokens[0] == DiscordService.username
   end
@@ -20,7 +20,7 @@ class DiscordMessageService
   end
 
   def tokens
-    return raw_tokens[1..-1] if starts_with_username
+    return raw_tokens[1..-1] if starts_with_username?
 
     raw_tokens
   end
