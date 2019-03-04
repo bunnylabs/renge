@@ -36,7 +36,7 @@ class DiscordService
       response = http.send_request(
         method,
         path,
-        JSON.dump(data),
+        data.to_json,
         'Content-Type' => 'application/json'
       )
       response
