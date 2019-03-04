@@ -52,15 +52,19 @@ RSpec.describe DiscordMessageProcessingService do
         .to receive(:directed_only?)
         .and_return(false)
 
-      allow(hello_command_instance)
+      allow(DiscordMessageProcessingService)
+        .to receive(:already_run?)
+        .and_return(false)
+
+      allow(DiscordMessageProcessingService)
         .to receive(:own_message?)
         .and_return(false)
 
-      allow(hello_command_instance)
+      allow(DiscordMessageProcessingService)
         .to receive(:no_such_command)
         .and_return(false)
 
-      allow(hello_command_instance)
+      allow(DiscordMessageProcessingService)
         .to receive(:will_read)
         .and_return(true)
 
