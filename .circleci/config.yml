@@ -36,7 +36,7 @@ jobs:
       - run:
           name: prepare test container
           command: |
-            mkdir -p /tmp/test-results/rspec
+            mkdir -p /tmp/test-results
             docker-compose -f .circleci/compose.yml exec rails mkdir /tmp/test-results
 
       - run:
@@ -54,8 +54,9 @@ jobs:
 
       - run:
           name: extract results
+          when: always
           command: |
-            docker cp rails:/tmp/test-results/rspec.xml /tmp/test-results/rspec/results.xml
+            docker cp rails:/tmp/test-results/rspec.xml /tmp/test-results/rspec.xml
 
       # collect reports
       - store_test_results:
