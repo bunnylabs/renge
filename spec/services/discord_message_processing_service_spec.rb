@@ -32,7 +32,15 @@ RSpec.describe DiscordMessageProcessingService do
     it 'gets run later' do
       stub_const('HelloCommand', hello_command_class)
 
-      expect(hello_command_class)
+      # return unless already_run?
+      # return @result = :self if own_message?
+      # return @result = :not_understood if no_such_command
+      # return @result = :ignored unless will_read?
+
+      # yield if block
+      # @result = :ok
+
+      allow(hello_command_class)
         .to receive(:new)
         .with(normal_message)
         .and_return(hello_command_instance)
@@ -43,6 +51,18 @@ RSpec.describe DiscordMessageProcessingService do
       allow(hello_command_instance)
         .to receive(:directed_only?)
         .and_return(false)
+
+      allow(hello_command_instance)
+        .to receive(:own_message?)
+        .and_return(false)
+
+      allow(hello_command_instance)
+        .to receive(:no_such_command)
+        .and_return(false)
+
+      allow(hello_command_instance)
+        .to receive(:will_read)
+        .and_return(true)
 
       expect(CommandRunnerWorker)
         .to receive(:perform_async)

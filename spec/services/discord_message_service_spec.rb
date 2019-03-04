@@ -73,6 +73,12 @@ RSpec.describe DiscordMessageService do
     context 'user refers to bot by username' do
       subject { described_class.new(**normal_message, message: 'pikachu hello') }
 
+      before do
+        allow(DiscordService)
+          .to receive(:id)
+          .and_return(1111)
+      end
+
       it 'detects that that is its username' do
         expect(DiscordService)
           .to receive(:username)
@@ -92,6 +98,12 @@ RSpec.describe DiscordMessageService do
 
     context 'user refers to bot by @ mention' do
       subject { described_class.new(**normal_message, message: '<@111222333> hello') }
+
+      before do
+        allow(DiscordService)
+          .to receive(:username)
+          .and_return('bulbasaur')
+      end
 
       it 'detects that it was mentioned' do
         expect(DiscordService)
