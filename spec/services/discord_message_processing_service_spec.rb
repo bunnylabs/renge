@@ -65,7 +65,7 @@ RSpec.describe DiscordMessageProcessingService do
         .and_return(false)
 
       allow(subject)
-        .to receive(:will_read)
+        .to receive(:will_read?)
         .and_return(true)
 
       expect(CommandRunnerWorker)
