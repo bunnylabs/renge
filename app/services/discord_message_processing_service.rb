@@ -24,7 +24,7 @@ class DiscordMessageProcessingService < DiscordMessageService
   end
 
   def already_run?
-    @result == :not_run
+    @result != :not_run
   end
 
   def own_message?
@@ -44,7 +44,7 @@ class DiscordMessageProcessingService < DiscordMessageService
   private
 
   def run_if_valid(&block)
-    return unless already_run?
+    return if already_run?
     return @result = :self if own_message?
     return @result = :not_understood if no_such_command
     return @result = :ignored unless will_read?
