@@ -86,6 +86,14 @@ services:
     depends_on:
       - rails
 
+  slack:
+    build: ./bots/slack-bot
+    container_name: slack
+    environment:
+      SLACK_TOKEN: ${SLACK_TOKEN}
+    depends_on:
+      - rails
+
   # ****************
   # Tools
   # ****************

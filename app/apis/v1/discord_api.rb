@@ -30,7 +30,7 @@ module V1
         end
       end
       post do
-        processor = DiscordMessageProcessingService.new(params)
+        processor = ::DiscordMessageProcessingService.new(params)
         processor.run
         { result: processor.result }
       end
