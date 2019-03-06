@@ -11,7 +11,7 @@ RUN apk --update add build-base git file less postgresql-dev nodejs tzdata curl 
     export PATH=/root/.cargo/bin:$PATH && \
     git clone https://github.com/rbspy/rbspy && \
     cd rbspy && \
-    cargo install && \
+    # cargo install && \
     mkdir -p /srv/tmp && \
     chown -R srv /srv
 

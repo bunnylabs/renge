@@ -11,6 +11,7 @@ class MainApi < Grape::API
   class V1Api < Grape::API
     version 'v1', using: :path
     mount V1::HealthApi
+    mount V1::DiscordApi
   end
 
   mount V1Api

@@ -27,6 +27,6 @@ class RootApi < Grape::API
 
   route :any, '*path' do
     status 404
-    { error: :not_found }
+    { result: :not_found }
   end
 end
