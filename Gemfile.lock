@@ -123,11 +123,14 @@ GEM
       railties (>= 4.2.0)
     faraday (0.9.2)
       multipart-post (>= 1.2, < 3)
+    faraday_middleware (0.13.1)
+      faraday (>= 0.7.4, < 1.0)
     ffi (1.10.0)
     fugit (1.1.8)
       et-orbi (~> 1.1, >= 1.1.7)
       raabro (~> 1.1)
     git (1.2.9.1)
+    gli (2.18.0)
     globalid (0.4.2)
       activesupport (>= 4.2.0)
     grape (1.2.3)
@@ -150,6 +153,7 @@ GEM
     grape-swagger-representable (0.2.2)
       grape-swagger (>= 0.31.0)
       representable
+    hashie (3.6.0)
     i18n (1.5.3)
       concurrent-ruby (~> 1.0)
     ice_nine (0.11.2)
@@ -312,6 +316,13 @@ GEM
       rufus-scheduler (~> 3.2)
       sidekiq (>= 3)
       tilt (>= 1.4.0)
+    slack-ruby-client (0.14.1)
+      activesupport
+      faraday (>= 0.9)
+      faraday_middleware
+      gli
+      hashie
+      websocket-driver
     spring (2.0.2)
       activesupport (>= 4.2)
     spring-watcher-listen (2.0.1)
@@ -388,6 +399,7 @@ DEPENDENCIES
   selenium-webdriver
   sidekiq
   sidekiq-scheduler
+  slack-ruby-client
   spring
   spring-watcher-listen (~> 2.0.0)
   tzinfo-data
@@ -396,4 +408,4 @@ DEPENDENCIES
   web-console (>= 3.3.0)
 
 BUNDLED WITH
-   1.16.6
+   1.17.2

@@ -45,6 +45,7 @@ gem 'ulid-rails', git: 'https://github.com/davidsiaw/ulid-rails'
 
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'slack-ruby-client'
 
 group :development, :test do
   gem 'danger'

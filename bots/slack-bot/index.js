@@ -8,7 +8,7 @@ const proto = {
 
 // An access token (from your Slack app or custom integration - usually xoxb)
 const SLACK_TOKEN = process.env.SLACK_TOKEN;
-const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails:3000/api/v1/slack"
+const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails:3000/api/v1/chat/slack"
 
 // The client is initialized and then started to get an active connection to the platform
 const rtm = new RTMClient(SLACK_TOKEN);
@@ -33,6 +33,7 @@ rtm.on('message', async (message) => {
   var user = await web.users.info({user: message.user});
   var conversation = await web.conversations.info({channel: message.channel});
   var team = await web.team.info();
+  var bot = await web.users.info({user: rtm.activeUserId});
 
   var files = [];
   if (message.files)
@@ -40,7 +41,7 @@ rtm.on('message', async (message) => {
   	files = message.files.map(function(attachment)
     {
       return {
-        id:            attachment.id,
+        attachment_id: attachment.id,
         filename:      attachment.name,
         filesize:      attachment.size,
         url:           attachment.url_private_download,
@@ -51,11 +52,15 @@ rtm.on('message', async (message) => {
   }
 
   var message_info = {
+
+  	bot_id:          bot.user.id,
+  	bot_username:    bot.user.name,
+
     author_id:       message.user,
     author_username: user.user.name,
     author_is_bot:   message.subtype === 'bot_message',
 
-    room_type:       conversation.channel.is_channel ? 'room' : 'dm',
+    room_type:       conversation.channel.is_channel ? 'text' : 'dm',
     room_id:         message.channel,
     room_name:       conversation.channel.name,
 

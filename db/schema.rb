@@ -10,9 +10,10 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_19_160906) do
+ActiveRecord::Schema.define(version: 2019_03_07_150140) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
@@ -41,6 +42,51 @@ ActiveRecord::Schema.define(version: 2019_02_19_160906) do
     t.index ["unlock_token"], name: "index_admins_on_unlock_token", unique: true
   end
 
+  create_table "chat_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "chat_message_id", null: false
+    t.string "attachment_id"
+    t.string "filename"
+    t.string "url"
+    t.boolean "is_image"
+    t.jsonb "other_params"
+    t.datetime "updated_at"
+    t.index ["attachment_id"], name: "index_chat_attachments_on_attachment_id"
+    t.index ["chat_message_id"], name: "index_chat_attachments_on_chat_message_id"
+    t.index ["filename"], name: "index_chat_attachments_on_filename"
+    t.index ["other_params"], name: "index_chat_attachments_on_other_params", using: :gin
+    t.index ["url"], name: "index_chat_attachments_on_url"
+  end
+
+  create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "chat_source", null: false
+    t.string "bot_id", null: false
+    t.string "bot_username", null: false
+    t.string "author_id", null: false
+    t.string "author_username", null: false
+    t.boolean "author_is_bot", null: false
+    t.string "room_type", null: false
+    t.string "room_id"
+    t.string "room_name"
+    t.string "message", null: false
+    t.string "server_id", null: false
+    t.string "server_name", null: false
+    t.boolean "processed", default: false
+    t.jsonb "other_params", default: "{}"
+    t.datetime "updated_at"
+    t.index ["author_id"], name: "index_chat_messages_on_author_id"
+    t.index ["author_username"], name: "index_chat_messages_on_author_username"
+    t.index ["bot_id"], name: "index_chat_messages_on_bot_id"
+    t.index ["bot_username"], name: "index_chat_messages_on_bot_username"
+    t.index ["chat_source"], name: "index_chat_messages_on_chat_source"
+    t.index ["message"], name: "index_chat_messages_on_message"
+    t.index ["other_params"], name: "index_chat_messages_on_other_params", using: :gin
+    t.index ["room_id"], name: "index_chat_messages_on_room_id"
+    t.index ["room_name"], name: "index_chat_messages_on_room_name"
+    t.index ["room_type"], name: "index_chat_messages_on_room_type"
+    t.index ["server_id"], name: "index_chat_messages_on_server_id"
+    t.index ["server_name"], name: "index_chat_messages_on_server_name"
+  end
+
   create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "item_type", null: false
     t.uuid "item_id", null: false
@@ -52,4 +98,5 @@ ActiveRecord::Schema.define(version: 2019_02_19_160906) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "chat_attachments", "chat_messages"
 end

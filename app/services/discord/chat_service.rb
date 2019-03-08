@@ -1,23 +1,13 @@
 # frozen_string_literal: true
 
-require 'net/http'
-
-# This class processes messages from discord
-class DiscordService
-  class << self
+module Discord
+  # This class processes messages from discord
+  class ChatService < ApplicationChatService
     def send_message(chan, msg)
       response = call_bot('PUT', '/messages',
                           message: msg,
                           channel_id: chan.to_s)
       response.code.to_s == '200'
-    end
-
-    def id
-      @id ||= request(:id).to_s
-    end
-
-    def username
-      @username ||= request(:username).to_s
     end
 
     private

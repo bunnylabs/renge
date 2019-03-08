@@ -16,7 +16,7 @@ const fileType = require('file-type');
 var jsmediatags = require("jsmediatags");
 
 const BOT_TOKEN = process.env.BOT_TOKEN
-const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails:3000/api/v1/discord"
+const RAILS_ENDPOINT = process.env.RAILS_ENDPOINT || "http://rails:3000/api/v1/chat/discord"
 const API_PORT = process.env.API_PORT || 3000;
 
 // Send message to channel
@@ -105,6 +105,10 @@ client.on('ready', () => {
 
 client.on('message', message => {
   var message_info = {
+
+    bot_id:          client.user.id,
+    bot_username:    client.user.username,
+
     author_id:       message.author.id,
     author_username: message.author.username,
     author_is_bot:   message.author.bot,
@@ -119,7 +123,7 @@ client.on('message', message => {
     attachments:     message.attachments.map(function(attachment)
     {
       return {
-        id:            attachment.id,
+        attachment_id: attachment.id,
         filename:      attachment.filename,
         filesize:      attachment.filesize,
         url:           attachment.url,
