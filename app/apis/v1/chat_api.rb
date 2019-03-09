@@ -34,7 +34,7 @@ module V1
         end
       end
       post ':chat_source' do
-        MessageProcessingService.process(params.with_indifferent_access)
+        MessageProcessingService.process(params.deep_symbolize_keys)
       end
     end
   end

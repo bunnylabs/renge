@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Methods to assist with parsing a message
-module CommandParsimony
+module CommandParser
   extend ActiveSupport::Concern
 
   def directed?
