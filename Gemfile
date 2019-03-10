@@ -45,6 +45,7 @@ gem 'ulid-rails', git: 'https://github.com/davidsiaw/ulid-rails'
 
 gem 'sidekiq'
 gem 'sidekiq-scheduler'
+gem 'slack-ruby-client'
 
 group :development, :test do
   gem 'danger'
@@ -59,6 +60,7 @@ group :test do
   gem 'database_cleaner'
   gem 'rspec_junit_formatter'
   gem 'selenium-webdriver'
+  gem 'shoulda-matchers'
 end
 
 group :development do

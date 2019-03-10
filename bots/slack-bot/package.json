@@ -1,0 +1,16 @@
+{
+  "name": "slack-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "node index.js"
+  },
+  "author": "astrobunny",
+  "license": "MIT",
+  "dependencies": {
+    "@slack/client": "^4.10.0",
+    "body-parser": "^1.18.3",
+    "express": "^4.16.4"
+  }
+}

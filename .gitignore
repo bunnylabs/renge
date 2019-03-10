@@ -27,3 +27,4 @@
 /config/master.key
 
 /bots/discord-bot/node_modules
+/bots/slack-bot/node_modules

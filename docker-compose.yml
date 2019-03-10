@@ -29,6 +29,7 @@ services:
       DATABASE_URL: postgres://postgres:postgres@db
       REDIS_URL: redis://redis:6379/0
       DISCORD_HOSTNAME: discord # Point to discord container
+      SLACK_TOKEN: ${SLACK_TOKEN}
     volumes:
       - .:/srv
       - active_storage:/srv/storage
@@ -59,6 +60,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CHROME_HOSTNAME: chrome # Point to the chrome container for testing
       DISCORD_HOSTNAME: discord # Point to discord container
+      SLACK_TOKEN: ${SLACK_TOKEN}
     volumes:
       - .:/srv
       - active_storage:/srv/storage
@@ -86,6 +88,14 @@ services:
     depends_on:
       - rails
 
+  slack:
+    build: ./bots/slack-bot
+    container_name: slack
+    environment:
+      SLACK_TOKEN: ${SLACK_TOKEN}
+    depends_on:
+      - rails
+
   # ****************
   # Tools
   # ****************
@@ -100,7 +110,7 @@ services:
       - 5050:80
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
-      PGADMIN_DEFAULT_PASSWORD: admin
+      PGADMIN_DEFAULT_PASSWORD: asdasd
     entrypoint: /entrypoint.sh
     volumes:
       - type: bind
