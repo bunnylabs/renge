@@ -23,7 +23,7 @@ module CommandParser
   end
 
   def command_tokens
-    tokens.join(' ')
+    tokens[1..-1]
   end
 
   def command
