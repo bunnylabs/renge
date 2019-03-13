@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :admin_player do
+  factory :god_player do
+    god { nil }
     player { nil }
   end
 end

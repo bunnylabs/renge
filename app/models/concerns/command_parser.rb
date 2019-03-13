@@ -46,27 +46,44 @@ module CommandParser
     evaluation == :ok
   end
 
+  def factors
+    %i[
+      no_such_command
+      own_message
+      unknown_source
+      not_directed
+      player_blacklisted
+      bot_unknown
+    ]
+  end
+
   def evaluation
-    no_such_command? ||
-      own_message? ||
-      unknown_source? ||
-      not_directed? ||
-      :ok
+    result = nil
+    factors.each { |factor| result ||= send(:"#{factor}?") ? factor : nil }
+    result ||= :ok
   end
 
   def no_such_command?
-    :no_such_command if command_class.nil?
+    command_class.nil?
   end
 
   def own_message?
-    :own_message if author_id == bot_id
+    author_id == bot_id
   end
 
   def unknown_source?
-    :unknown_source if chat_service_class.nil?
+    chat_service_class.nil?
   end
 
   def not_directed?
-    :not_directed if command_class&.new(nil)&.directed_only? && !directed?
+    command_class&.new(nil)&.directed_only? && !directed?
+  end
+
+  def player_blacklisted?
+    player.blacklisted?
+  end
+
+  def bot_unknown?
+    bot.nil?
   end
 end

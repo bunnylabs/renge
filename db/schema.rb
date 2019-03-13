@@ -10,18 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_10_052012) do
+ActiveRecord::Schema.define(version: 2019_03_10_142718) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
-
-  create_table "admin_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "player_id", null: false
-    t.datetime "updated_at"
-    t.index ["player_id"], name: "index_admin_players_on_player_id", unique: true
-  end
 
   create_table "admins", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
@@ -54,12 +48,20 @@ ActiveRecord::Schema.define(version: 2019_03_10_052012) do
     t.index ["player_id"], name: "index_blacklist_entries_on_player_id", unique: true
   end
 
-  create_table "bots", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "bot_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "bot_id", null: false
     t.uuid "player_id", null: false
+    t.datetime "updated_at"
+    t.index ["bot_id", "player_id"], name: "index_bot_players_on_bot_id_and_player_id", unique: true
+    t.index ["bot_id"], name: "index_bot_players_on_bot_id", unique: true
+    t.index ["player_id"], name: "index_bot_players_on_player_id", unique: true
+  end
+
+  create_table "bots", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "bot_password", null: false
     t.jsonb "response_auth_document", null: false
+    t.boolean "active", default: false, null: false
     t.datetime "updated_at"
-    t.index ["player_id"], name: "index_bots_on_player_id", unique: true
   end
 
   create_table "chat_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -107,6 +109,20 @@ ActiveRecord::Schema.define(version: 2019_03_10_052012) do
     t.index ["server_name"], name: "index_chat_messages_on_server_name"
   end
 
+  create_table "god_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "god_id", null: false
+    t.uuid "player_id", null: false
+    t.datetime "updated_at"
+    t.index ["god_id", "player_id"], name: "index_god_players_on_god_id_and_player_id", unique: true
+    t.index ["god_id"], name: "index_god_players_on_god_id", unique: true
+    t.index ["player_id"], name: "index_god_players_on_player_id", unique: true
+  end
+
+  create_table "gods", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: false, null: false
+    t.datetime "updated_at"
+  end
+
   create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name", null: false
     t.datetime "updated_at"
@@ -140,10 +156,12 @@ ActiveRecord::Schema.define(version: 2019_03_10_052012) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
-  add_foreign_key "admin_players", "players"
   add_foreign_key "blacklist_entries", "players"
-  add_foreign_key "bots", "players"
+  add_foreign_key "bot_players", "bots"
+  add_foreign_key "bot_players", "players"
   add_foreign_key "chat_attachments", "chat_messages"
+  add_foreign_key "god_players", "gods"
+  add_foreign_key "god_players", "players"
   add_foreign_key "player_permissions", "permissions"
   add_foreign_key "player_permissions", "players"
 end

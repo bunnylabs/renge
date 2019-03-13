@@ -2,8 +2,8 @@
 
 FactoryBot.define do
   factory :bot do
-    player { nil }
     bot_password { 'MyString' }
+    active { false }
     response_auth_document { '' }
   end
 end

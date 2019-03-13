@@ -16,4 +16,15 @@ class ChatMessage < ApplicationRecord
   validates_presence_of :message
   validates_presence_of :server_id
   validates_presence_of :server_name
+
+  def bot
+    Bot
+      .joins(:player)
+      .merge(Player.where(chat_source: chat_source, user_id: bot_id))
+      .first
+  end
+
+  def author
+    Player.find_by(chat_source: chat_source, user_id: author_id)
+  end
 end

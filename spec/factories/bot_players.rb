@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :player_permission do
+  factory :bot_player do
+    bot { nil }
     player { nil }
-    permission { nil }
   end
 end
