@@ -11,7 +11,7 @@ if ENV['CHROME_HOSTNAME'].present?
                                    url: "http://#{ENV['CHROME_HOSTNAME']}:4444/wd/hub")
   end
   Capybara.server_host = '0.0.0.0'
-  Capybara.server_port = '4000'
+  Capybara.server_port = ENV['TEST_PORT'] || '4000'
   hostname = ENV['TEST_HOST'] || 'rails'
   Capybara.app_host = "http://#{hostname}:#{Capybara.server_port}"
 else
