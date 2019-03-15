@@ -8,7 +8,7 @@ class ApplicationCommand
     @chat_service = chat_service
   end
 
-  # Does this command only responds to directed commands?
+  # Does this command only respond to directed commands?
   def directed_only?
     true
   end

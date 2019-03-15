@@ -48,12 +48,12 @@ module CommandParser
 
   def factors
     %i[
-      no_such_command
+      bot_unknown
       own_message
       unknown_source
       not_directed
-      player_blacklisted
-      bot_unknown
+      no_such_command
+      author_blacklisted
     ]
   end
 
@@ -79,8 +79,8 @@ module CommandParser
     command_class&.new(nil)&.directed_only? && !directed?
   end
 
-  def player_blacklisted?
-    player.blacklisted?
+  def author_blacklisted?
+    author.present? && author.blacklisted?
   end
 
   def bot_unknown?
