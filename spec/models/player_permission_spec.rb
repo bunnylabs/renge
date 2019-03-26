@@ -3,5 +3,6 @@
 require 'rails_helper'
 
 RSpec.describe PlayerPermission, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+  it { should validate_presence_of(:player) }
+  it { should validate_presence_of(:permission) }
 end

@@ -35,13 +35,13 @@ shared_examples_for 'CommandParser' do
     end
 
     it 'is true if starts with username' do
-      subject.bot_id = '1234'
+      subject.bot_key = '1234'
       subject.message = '<@1234> good day'
       expect(subject.starts_with_username?).to be true
     end
 
     it 'is false otherwise' do
-      subject.bot_id = '1234'
+      subject.bot_key = '1234'
       subject.bot_username = 'pikachu'
       subject.message = 'gotta catch them all'
       expect(subject.starts_with_username?).to be false
@@ -138,6 +138,15 @@ shared_examples_for 'CommandParser' do
       allow(subject)
         .to receive(:not_directed?)
         .and_return(nil)
+      allow(subject)
+        .to receive(:bot_unknown?)
+        .and_return(nil)
+      allow(subject)
+        .to receive(:not_directed?)
+        .and_return(nil)
+      allow(subject)
+        .to receive(:author_is_stranger?)
+        .and_return(nil)
 
       expect(subject.evaluation).to eq :ok
     end
@@ -156,15 +165,15 @@ shared_examples_for 'CommandParser' do
 
     it 'is no_such_command if command is unknown' do
       subject.message = 'meowo louder'
-      expect(subject.no_such_command?).to eq :no_such_command
+      expect(subject.no_such_command?).to eq true
     end
   end
 
   describe '#own_message?' do
     it 'is true if message is own' do
-      subject.bot_id = '1234'
-      subject.author_id = '1234'
-      expect(subject.own_message?).to eq :own_message
+      subject.bot_key = '1234'
+      subject.author_key = '1234'
+      expect(subject.own_message?).to eq true
     end
   end
 
@@ -177,7 +186,7 @@ shared_examples_for 'CommandParser' do
     end
 
     it 'is :unknown_source if source is not known' do
-      expect(subject.unknown_source?).to eq :unknown_source
+      expect(subject.unknown_source?).to eq true
     end
   end
 
@@ -209,7 +218,7 @@ shared_examples_for 'CommandParser' do
         .to receive(:directed?)
         .and_return(false)
 
-      expect(subject.not_directed?).to eq :not_directed
+      expect(subject.not_directed?).to eq true
     end
 
     it 'returns falsey if command requires direction and gets it' do
@@ -250,6 +259,104 @@ shared_examples_for 'CommandParser' do
         .and_return(example_command_class)
 
       expect(subject.not_directed?).to be_falsey
+    end
+  end
+
+  describe '#author_blacklisted?' do
+    it 'returns true if author is indeed blacklisted' do
+      subject.author_key = '1234'
+      create :blacklist_entry, player: create(:player, user_key: '1234')
+      expect(subject.author_blacklisted?).to eq true
+    end
+  end
+
+  describe '#author_is_mortal?' do
+    let(:example_command) { instance_double(ApplicationCommand) }
+    before do
+      example_command_class = double(ApplicationCommand)
+      allow(example_command_class)
+        .to receive(:new)
+        .and_return(example_command)
+
+      expect(subject)
+        .to receive(:command_class)
+        .and_return(example_command_class)
+    end
+
+    it 'returns false if command is not divine' do
+      allow(example_command)
+        .to receive(:divine?)
+        .and_return(false)
+
+      expect(subject.author_is_mortal?).to eq false
+    end
+
+    it 'returns true if command is divine' do
+      allow(example_command)
+        .to receive(:divine?)
+        .and_return(true)
+
+      expect(subject.author_is_mortal?).to eq true
+    end
+
+    it 'returns true if command is divine and author is not god' do
+      allow(example_command)
+        .to receive(:divine?)
+        .and_return(true)
+      subject.author_key = '1234'
+      create(:player, user_key: '1234')
+
+      expect(subject.author_is_mortal?).to eq true
+    end
+
+    it 'returns false if command is diving but author is god' do
+      allow(example_command)
+        .to receive(:divine?)
+        .and_return(true)
+      subject.author_key = '1234'
+      create :god_player, player: create(:player, user_key: '1234')
+
+      expect(subject.author_is_mortal?).to eq false
+    end
+  end
+
+  describe '#author_is_stranger?' do
+    let(:example_command) { instance_double(ApplicationCommand) }
+    before do
+      example_command_class = double(ApplicationCommand)
+      allow(example_command_class)
+        .to receive(:new)
+        .and_return(example_command)
+
+      expect(subject)
+        .to receive(:command_class)
+        .and_return(example_command_class)
+    end
+
+    it 'returns false if command is public' do
+      allow(example_command)
+        .to receive(:public?)
+        .and_return(true)
+
+      expect(subject.author_is_stranger?).to eq false
+    end
+
+    it 'returns true if command is not public' do
+      allow(example_command)
+        .to receive(:public?)
+        .and_return(false)
+
+      expect(subject.author_is_stranger?).to eq true
+    end
+
+    it 'returns false if command is not public but player known' do
+      allow(example_command)
+        .to receive(:public?)
+        .and_return(false)
+      subject.author_key = '1234'
+      create :god_player, player: create(:player, user_key: '1234')
+
+      expect(subject.author_is_stranger?).to eq false
     end
   end
 end

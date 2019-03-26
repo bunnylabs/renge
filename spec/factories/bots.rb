@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :bot do
     bot_password { 'MyString' }
-    active { false }
-    response_auth_document { '' }
+    active { true }
+    response_auth_document { '{}' }
   end
 end

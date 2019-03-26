@@ -66,13 +66,13 @@ ActiveRecord::Schema.define(version: 2019_03_10_142718) do
 
   create_table "chat_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "chat_message_id", null: false
-    t.string "attachment_id"
+    t.string "attachment_key"
     t.string "filename"
     t.string "url"
     t.boolean "is_image"
     t.jsonb "other_params"
     t.datetime "updated_at"
-    t.index ["attachment_id"], name: "index_chat_attachments_on_attachment_id"
+    t.index ["attachment_key"], name: "index_chat_attachments_on_attachment_key"
     t.index ["chat_message_id"], name: "index_chat_attachments_on_chat_message_id"
     t.index ["filename"], name: "index_chat_attachments_on_filename"
     t.index ["other_params"], name: "index_chat_attachments_on_other_params", using: :gin
@@ -81,31 +81,33 @@ ActiveRecord::Schema.define(version: 2019_03_10_142718) do
 
   create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "chat_source", null: false
-    t.string "bot_id", null: false
+    t.string "bot_key", null: false
     t.string "bot_username", null: false
-    t.string "author_id", null: false
+    t.string "author_key", null: false
     t.string "author_username", null: false
     t.boolean "author_is_bot", null: false
     t.string "room_type", null: false
-    t.string "room_id"
+    t.string "room_key"
     t.string "room_name"
     t.string "message", null: false
-    t.string "server_id", null: false
+    t.string "message_key", null: false
+    t.string "server_key", null: false
     t.string "server_name", null: false
     t.boolean "processed", default: false
     t.jsonb "other_params", default: "{}"
     t.datetime "updated_at"
-    t.index ["author_id"], name: "index_chat_messages_on_author_id"
+    t.index ["author_key"], name: "index_chat_messages_on_author_key"
     t.index ["author_username"], name: "index_chat_messages_on_author_username"
-    t.index ["bot_id"], name: "index_chat_messages_on_bot_id"
+    t.index ["bot_key"], name: "index_chat_messages_on_bot_key"
     t.index ["bot_username"], name: "index_chat_messages_on_bot_username"
     t.index ["chat_source"], name: "index_chat_messages_on_chat_source"
     t.index ["message"], name: "index_chat_messages_on_message"
+    t.index ["message_key"], name: "index_chat_messages_on_message_key"
     t.index ["other_params"], name: "index_chat_messages_on_other_params", using: :gin
-    t.index ["room_id"], name: "index_chat_messages_on_room_id"
+    t.index ["room_key"], name: "index_chat_messages_on_room_key"
     t.index ["room_name"], name: "index_chat_messages_on_room_name"
     t.index ["room_type"], name: "index_chat_messages_on_room_type"
-    t.index ["server_id"], name: "index_chat_messages_on_server_id"
+    t.index ["server_key"], name: "index_chat_messages_on_server_key"
     t.index ["server_name"], name: "index_chat_messages_on_server_name"
   end
 
@@ -140,9 +142,9 @@ ActiveRecord::Schema.define(version: 2019_03_10_142718) do
 
   create_table "players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "chat_source", null: false
-    t.string "user_id", null: false
+    t.string "user_key", null: false
     t.datetime "updated_at"
-    t.index ["chat_source", "user_id"], name: "index_players_on_chat_source_and_user_id", unique: true
+    t.index ["chat_source", "user_key"], name: "index_players_on_chat_source_and_user_key", unique: true
   end
 
   create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|

@@ -9,7 +9,7 @@ module CommandParser
   end
 
   def starts_with_username?
-    raw_tokens[0] == "<@#{bot_id}>" || raw_tokens[0] == bot_username
+    raw_tokens[0] == "<@#{bot_key}>" || raw_tokens[0] == bot_username
   end
 
   def raw_tokens
@@ -27,7 +27,7 @@ module CommandParser
   end
 
   def command
-    tokens[0] || ''
+    tokens[0].sub(/:$/, '') || ''
   end
 
   def command_class
@@ -54,6 +54,8 @@ module CommandParser
       not_directed
       no_such_command
       author_blacklisted
+      author_is_mortal
+      author_is_stranger
     ]
   end
 
@@ -68,7 +70,7 @@ module CommandParser
   end
 
   def own_message?
-    author_id == bot_id
+    author_key == bot_key
   end
 
   def unknown_source?
@@ -85,5 +87,18 @@ module CommandParser
 
   def bot_unknown?
     bot.nil?
+  end
+
+  def author_is_mortal?
+    return false unless command_class&.new(nil)&.divine?
+    return true unless author.present?
+
+    !author.god.present?
+  end
+
+  def author_is_stranger?
+    return false if command_class&.new(nil)&.public?
+
+    !author.present?
   end
 end

@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :player_permission do
-    player { nil }
-    permission { nil }
+    player
+    permission
   end
 end

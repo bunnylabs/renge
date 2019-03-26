@@ -84,7 +84,9 @@ services:
     build: ./bots/discord-bot
     container_name: discord
     environment:
-      BOT_TOKEN: ${BOT_TOKEN}
+      DISCORD_TOKEN: ${DISCORD_TOKEN}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
     depends_on:
       - rails
 

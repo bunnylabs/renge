@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :permission do
-    name { 'MyString' }
+    name { 'command.subcommand' }
   end
 end

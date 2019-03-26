@@ -2,5 +2,5 @@
 
 require 'rails_helper'
 
-RSpec.describe God, type: :model do
+RSpec.describe Discord::ChatService do
 end

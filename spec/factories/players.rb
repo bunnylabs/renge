@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :player do
-    chat_source { 'MyString' }
-    user_id { 'MyString' }
+    chat_source { 'bunnychat' }
+    user_key { 'U1234' }
   end
 end

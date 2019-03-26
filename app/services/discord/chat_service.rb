@@ -10,6 +10,26 @@ module Discord
       response.code.to_s == '200'
     end
 
+    def join_voice(channel_id)
+      response = call_bot('POST', '/join_vc',
+                          channel_id: channel_id)
+      response.code.to_s == '200'
+    end
+
+    def say_voice(msg, voice_id = 'Takumi')
+      response = call_bot('POST', '/say_vc',
+                          message: msg,
+                          channel_id: message.room_key,
+                          voice_id: voice_id)
+      response.code.to_s == '200'
+    end
+
+    def in_voice_channel?(user_id = message.author_key)
+      response = call_bot('POST', '/in_vc',
+                          user_id: user_id)
+      JSON.parse(response.body)['result'] == 'yes'
+    end
+
     private
 
     def request(thing)

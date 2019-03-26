@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :blacklist_entry do
-    player { nil }
+    player
   end
 end

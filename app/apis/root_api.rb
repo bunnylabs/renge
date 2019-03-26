@@ -29,4 +29,6 @@ class RootApi < Grape::API
     status 404
     { result: :not_found }
   end
+  
+  cascade false
 end

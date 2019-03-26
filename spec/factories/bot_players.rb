@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :bot_player do
-    bot { nil }
-    player { nil }
+    bot
+    player
   end
 end

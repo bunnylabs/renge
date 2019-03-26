@@ -13,6 +13,16 @@ class ApplicationCommand
     true
   end
 
+  # Does this command only respond to known players?
+  def public?
+    false
+  end
+
+  # Is this command only available to gods?
+  def divine?
+    true
+  end
+
   def run; end
 
   def successful?

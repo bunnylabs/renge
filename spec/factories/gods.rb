@@ -2,6 +2,6 @@
 
 FactoryBot.define do
   factory :god do
-    active { false }
+    active { true }
   end
 end
