@@ -27,7 +27,7 @@ module CommandParser
   end
 
   def command
-    tokens[0].sub(/:$/, '') || ''
+    tokens[0]&.sub(/:$/, '')&.downcase || ''
   end
 
   def command_class
@@ -51,11 +51,11 @@ module CommandParser
       bot_unknown
       own_message
       unknown_source
+      author_is_stranger
       not_directed
       no_such_command
       author_blacklisted
       author_is_mortal
-      author_is_stranger
     ]
   end
 

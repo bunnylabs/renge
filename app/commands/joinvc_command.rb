@@ -6,7 +6,7 @@ class JoinvcCommand < ApplicationCommand
     channel_id = chat_message.command_tokens[0]
     return unless channel_id
 
-    Discord::ChatService.new(chat_message).join_voice(channel_id)
+    chat_service.join_voice(channel_id)
     chat_service.reply("Joining #{channel_id}")
   end
 end

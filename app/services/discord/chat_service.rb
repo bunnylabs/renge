@@ -30,6 +30,11 @@ module Discord
       JSON.parse(response.body)['result'] == 'yes'
     end
 
+    def leave_voice
+      response = call_bot('POST', '/leave_vc')
+      response.code.to_s == '200'
+    end
+
     private
 
     def request(thing)

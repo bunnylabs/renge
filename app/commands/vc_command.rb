@@ -7,7 +7,7 @@ class VcCommand < ApplicationCommand
   end
 
   def public?
-    true
+    false
   end
 
   def divine?
@@ -26,6 +26,12 @@ class VcCommand < ApplicationCommand
       )
     end
 
-    chat_service.say_voice(message, 'Nicole')
+    chat_service.say_voice(message, seiyuu.name)
+  end
+
+  private
+
+  def seiyuu
+    chat_message.author.seiyuu || 'Matthew'
   end
 end

@@ -386,6 +386,7 @@ function not_find_chan(chan)
 
 function join_chan(channel_id)
 {
+  leave_chan();
   find_channel(client, channel_id, (c)=> {
     c.join()
      .then((connection) => {
@@ -394,6 +395,15 @@ function join_chan(channel_id)
     })
      .catch(console.error);
   }, function(){ setTimeout( function(){join_chan(channel_id);}, 10); } );
+}
+
+function leave_chan()
+{
+  if (vc_connection)
+  {
+    vc_connection.disconnect();
+    vc_connection = null;
+  }
 }
 
 function play_next()
@@ -587,6 +597,11 @@ async function start_html_server(client) {
   app.post('/join_vc', (req, res) =>{
     join_chan(req.body.channel_id)
     res.send(JSON.stringify({result: 'joining', channel_id: req.body.channel_id}))
+  });
+
+  app.post('/leave_vc', (req, res) =>{
+    leave_chan();
+    res.send(JSON.stringify({result: 'leave'}))
   });
 
   app.post('/say_vc', (req, res) =>{

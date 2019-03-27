@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_10_142718) do
+ActiveRecord::Schema.define(version: 2019_03_27_123820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -140,11 +140,26 @@ ActiveRecord::Schema.define(version: 2019_03_10_142718) do
     t.index ["player_id"], name: "index_player_permissions_on_player_id"
   end
 
+  create_table "player_seiyuus", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "player_id", null: false
+    t.uuid "seiyuu_id", null: false
+    t.datetime "updated_at"
+    t.index ["player_id", "seiyuu_id"], name: "index_player_seiyuus_on_player_id_and_seiyuu_id", unique: true
+    t.index ["player_id"], name: "index_player_seiyuus_on_player_id"
+    t.index ["seiyuu_id"], name: "index_player_seiyuus_on_seiyuu_id"
+  end
+
   create_table "players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "chat_source", null: false
     t.string "user_key", null: false
     t.datetime "updated_at"
     t.index ["chat_source", "user_key"], name: "index_players_on_chat_source_and_user_key", unique: true
+  end
+
+  create_table "seiyuus", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_seiyuus_on_name", unique: true
   end
 
   create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -166,4 +181,6 @@ ActiveRecord::Schema.define(version: 2019_03_10_142718) do
   add_foreign_key "god_players", "players"
   add_foreign_key "player_permissions", "permissions"
   add_foreign_key "player_permissions", "players"
+  add_foreign_key "player_seiyuus", "players"
+  add_foreign_key "player_seiyuus", "seiyuus"
 end

@@ -4,8 +4,10 @@
 class Player < ApplicationRecord
   has_one :god_player, dependent: :destroy
   has_one :bot_player, dependent: :destroy
+  has_one :player_seiyuu
   has_one :bot, through: :bot_player
   has_one :god, through: :god_player
+  has_one :seiyuu, through: :player_seiyuu
 
   has_many :player_permissions
   has_many :permissions, through: :player_permissions

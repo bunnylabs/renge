@@ -53,3 +53,17 @@ BotPlayer.create(
     }
   )
 )
+
+%w[
+  Takumi
+  Mizuki
+  Amy
+  Brian
+  Joanna
+  Matthew
+  Kendra
+  Joey
+  Kimberly
+  Justin
+  Salli
+].each { |x| Seiyuu.create(name: x) }
