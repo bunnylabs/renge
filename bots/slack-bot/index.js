@@ -41,15 +41,17 @@ rtm.on('message', async (message) => {
   	files = message.files.map(function(attachment)
     {
       return {
-        attachment_id: attachment.id,
-        filename:      attachment.name,
-        filesize:      attachment.size,
-        url:           attachment.url_private_download,
-        proxy_url:     attachment.url_private_download,
-        is_image:      attachment.mimetype.indexOf('image') != -1
+        attachment_key: attachment.id,
+        filename:       attachment.name,
+        filesize:       attachment.size,
+        url:            attachment.url_private_download,
+        proxy_url:      attachment.url_private_download,
+        is_image:       attachment.mimetype.indexOf('image') != -1
       };
     });
   }
+
+  console.log("[GOT]", message)
 
   var message_info = {
 
@@ -72,7 +74,8 @@ rtm.on('message', async (message) => {
 
     attachments:     files,
 
-    message:         message.text
+    message:         message.text,
+    message_id:      message.ts
   }
 
   var url = new URL(RAILS_ENDPOINT);

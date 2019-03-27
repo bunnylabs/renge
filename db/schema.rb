@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_07_150140) do
+ActiveRecord::Schema.define(version: 2019_03_27_123820) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "citext"
@@ -42,15 +42,37 @@ ActiveRecord::Schema.define(version: 2019_03_07_150140) do
     t.index ["unlock_token"], name: "index_admins_on_unlock_token", unique: true
   end
 
+  create_table "blacklist_entries", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "player_id", null: false
+    t.datetime "updated_at"
+    t.index ["player_id"], name: "index_blacklist_entries_on_player_id", unique: true
+  end
+
+  create_table "bot_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "bot_id", null: false
+    t.uuid "player_id", null: false
+    t.datetime "updated_at"
+    t.index ["bot_id", "player_id"], name: "index_bot_players_on_bot_id_and_player_id", unique: true
+    t.index ["bot_id"], name: "index_bot_players_on_bot_id", unique: true
+    t.index ["player_id"], name: "index_bot_players_on_player_id", unique: true
+  end
+
+  create_table "bots", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "bot_password", null: false
+    t.jsonb "response_auth_document", null: false
+    t.boolean "active", default: false, null: false
+    t.datetime "updated_at"
+  end
+
   create_table "chat_attachments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "chat_message_id", null: false
-    t.string "attachment_id"
+    t.string "attachment_key"
     t.string "filename"
     t.string "url"
     t.boolean "is_image"
     t.jsonb "other_params"
     t.datetime "updated_at"
-    t.index ["attachment_id"], name: "index_chat_attachments_on_attachment_id"
+    t.index ["attachment_key"], name: "index_chat_attachments_on_attachment_key"
     t.index ["chat_message_id"], name: "index_chat_attachments_on_chat_message_id"
     t.index ["filename"], name: "index_chat_attachments_on_filename"
     t.index ["other_params"], name: "index_chat_attachments_on_other_params", using: :gin
@@ -59,32 +81,85 @@ ActiveRecord::Schema.define(version: 2019_03_07_150140) do
 
   create_table "chat_messages", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "chat_source", null: false
-    t.string "bot_id", null: false
+    t.string "bot_key", null: false
     t.string "bot_username", null: false
-    t.string "author_id", null: false
+    t.string "author_key", null: false
     t.string "author_username", null: false
     t.boolean "author_is_bot", null: false
     t.string "room_type", null: false
-    t.string "room_id"
+    t.string "room_key"
     t.string "room_name"
     t.string "message", null: false
-    t.string "server_id", null: false
+    t.string "message_key", null: false
+    t.string "server_key", null: false
     t.string "server_name", null: false
     t.boolean "processed", default: false
     t.jsonb "other_params", default: "{}"
     t.datetime "updated_at"
-    t.index ["author_id"], name: "index_chat_messages_on_author_id"
+    t.index ["author_key"], name: "index_chat_messages_on_author_key"
     t.index ["author_username"], name: "index_chat_messages_on_author_username"
-    t.index ["bot_id"], name: "index_chat_messages_on_bot_id"
+    t.index ["bot_key"], name: "index_chat_messages_on_bot_key"
     t.index ["bot_username"], name: "index_chat_messages_on_bot_username"
     t.index ["chat_source"], name: "index_chat_messages_on_chat_source"
     t.index ["message"], name: "index_chat_messages_on_message"
+    t.index ["message_key"], name: "index_chat_messages_on_message_key"
     t.index ["other_params"], name: "index_chat_messages_on_other_params", using: :gin
-    t.index ["room_id"], name: "index_chat_messages_on_room_id"
+    t.index ["room_key"], name: "index_chat_messages_on_room_key"
     t.index ["room_name"], name: "index_chat_messages_on_room_name"
     t.index ["room_type"], name: "index_chat_messages_on_room_type"
-    t.index ["server_id"], name: "index_chat_messages_on_server_id"
+    t.index ["server_key"], name: "index_chat_messages_on_server_key"
     t.index ["server_name"], name: "index_chat_messages_on_server_name"
+  end
+
+  create_table "god_players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "god_id", null: false
+    t.uuid "player_id", null: false
+    t.datetime "updated_at"
+    t.index ["god_id", "player_id"], name: "index_god_players_on_god_id_and_player_id", unique: true
+    t.index ["god_id"], name: "index_god_players_on_god_id", unique: true
+    t.index ["player_id"], name: "index_god_players_on_player_id", unique: true
+  end
+
+  create_table "gods", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.boolean "active", default: false, null: false
+    t.datetime "updated_at"
+  end
+
+  create_table "permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_permissions_on_name", unique: true
+  end
+
+  create_table "player_permissions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "player_id", null: false
+    t.uuid "permission_id", null: false
+    t.datetime "updated_at"
+    t.index ["permission_id"], name: "index_player_permissions_on_permission_id"
+    t.index ["player_id", "permission_id"], name: "index_player_permissions_on_player_id_and_permission_id", unique: true
+    t.index ["player_id"], name: "index_player_permissions_on_player_id"
+  end
+
+  create_table "player_seiyuus", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "player_id", null: false
+    t.uuid "seiyuu_id", null: false
+    t.datetime "updated_at"
+    t.index ["player_id", "seiyuu_id"], name: "index_player_seiyuus_on_player_id_and_seiyuu_id", unique: true
+    t.index ["player_id"], name: "index_player_seiyuus_on_player_id"
+    t.index ["seiyuu_id"], name: "index_player_seiyuus_on_seiyuu_id"
+  end
+
+  create_table "players", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "chat_source", null: false
+    t.string "user_key", null: false
+    t.datetime "updated_at"
+    t.index ["chat_source", "user_key"], name: "index_players_on_chat_source_and_user_key", unique: true
+  end
+
+  create_table "seiyuus", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.text "name", null: false
+    t.datetime "updated_at"
+    t.index ["name"], name: "index_seiyuus_on_name", unique: true
   end
 
   create_table "versions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -98,5 +173,14 @@ ActiveRecord::Schema.define(version: 2019_03_07_150140) do
     t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
+  add_foreign_key "blacklist_entries", "players"
+  add_foreign_key "bot_players", "bots"
+  add_foreign_key "bot_players", "players"
   add_foreign_key "chat_attachments", "chat_messages"
+  add_foreign_key "god_players", "gods"
+  add_foreign_key "god_players", "players"
+  add_foreign_key "player_permissions", "permissions"
+  add_foreign_key "player_permissions", "players"
+  add_foreign_key "player_seiyuus", "players"
+  add_foreign_key "player_seiyuus", "seiyuus"
 end

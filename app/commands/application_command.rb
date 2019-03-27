@@ -8,8 +8,18 @@ class ApplicationCommand
     @chat_service = chat_service
   end
 
-  # Does this command only responds to directed commands?
+  # Does this command only respond to directed commands?
   def directed_only?
+    true
+  end
+
+  # Does this command only respond to known players?
+  def public?
+    false
+  end
+
+  # Is this command only available to gods?
+  def divine?
     true
   end
 
